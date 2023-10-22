@@ -1,74 +1,139 @@
-# LinuxGSM Game Server Docker Image
+# FreeBSDGSM Game Server Containers
 
 <p align="center">
-  <a href="https://linuxgsm.com"><img src="https://user-images.githubusercontent.com/4478206/197897104-bb718d2e-09a0-4f83-8e86-c829044750a9.jpg" alt="LinuxGSM"></a>
+    <img src="https://cdn.t2v.city/content/vSKyC7YoiXXpaUMHd76H/freebsdgsm.sh/FreeBSDGSM.png" alt="LinuxGSM" style="width:500px;">
 <br>
-<a href="https://hub.docker.com/r/gameservermanagers/gameserver"><img src="https://img.shields.io/docker/pulls/gameservermanagers/gameserver.svg?style=flat-square&amp;logo=docker&amp;logoColor=white" alt="Docker Pulls"></a>
-<a href="https://github.com/GameServerManagers/docker-gameserver/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/GameServerManagers/docker-gameserver/docker-publish.yml?style=flat-square"></a>
-<a href="https://www.codacy.com/gh/GameServerManagers/docker-gameserver/dashboard"><img src="https://img.shields.io/codacy/grade/42d400dcdd714ae080d77fcb40d00f1c?style=flat-square&logo=codacy&logoColor=white" alt="Codacy grade"></a>
-<a href="https://developer.valvesoftware.com/wiki/SteamCMD"><img src="https://img.shields.io/badge/SteamCMD-000000?style=flat-square&amp;logo=Steam&amp;logoColor=white" alt="SteamCMD"></a>
-<a href="https://github.com/GameServerManagers/docker-gameserver/blob/main/LICENSE"><img src="https://img.shields.io/github/license/gameservermanagers/docker-gameserver?style=flat-square" alt="MIT License"></a></p>
+  <img src="https://cdn.t2v.city/archival-data/hi.gif" alt="LinuxGSM" style="width:40px;">
+<a href="https://github.com/t2vee/FreeBSDGSM/blob/main/LICENSE_lgsm"><img alt="Static Badge" src="https://img.shields.io/badge/LinuxGSM_license-MIT-lime?style=flat-square&logo=gpl"></a>
+	<a href="https://github.com/t2vee/FreeBSDGSM/blob/main/LICENSE_fbsdgsm"><img alt="Static Badge" src="https://img.shields.io/badge/FreeBSDGSM_license-GPLv3-darkred?style=flat-square&logo=gpl"></a>
+  <img src="https://cdn.t2v.city/archival-data/hi.gif" alt="LinuxGSM" style="width:40px;">
 
+---
+> Warning: This README is currently pseudo. There will be many, many changes to how things may work but for now this is how I hope to see it work.
 ## About
+FreeBSDGSM is the LinuxGSM compatibility layer for FreeBSD. This repo holds the [pot images](https://pot.pizzamig.dev/Images/) for all the games servers provided by fgsm.
+All the available images are listed within this repo using their respective server name; e.g TeamFortress 2 is tf2server.
 
-LinuxGSM is a command-line tool for quick, simple deployment and management of Linux dedicated game servers. This container image builds weekly and is available on [Docker Hub](https://hub.docker.com/r/gameservermanagers/gameserver) as well as [GitHub Container Registry](https://github.com/GameServerManagers/docker-gameserver/pkgs/container/gameserver).
+For a list of available game servers visit [linuxgsm.com](https://linuxgsm.com) or the [serverlist.csv](https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv).
 
-## Tags
-
-For a list of available game servers visit [linuxgsm.com](https://linuxgsm.com) or the [serverlist.csv](https://github.com/GameServerManagers/LinuxGSM/blob/master/lgsm/data/serverlist.csv). For all tags see the [tags list](https://hub.docker.com/r/gameservermanagers/gameserver/tags) on Docker Hub.
+---
 
 ## Usage
+These containers can be run 1 of 2 ways:
+- Standalone Container
+  - Helper Script
+- Automatically created by FreeBSDGSM when installed as a plugin
+  - pot (freebsd as the base distro)
+  - qemu (windows or linux as the base distro)
 
-### docker-compose
-Here is an example docker-compose configuration for the "csgoserver" using the image `gameservermanagers/gameserver:csgo`. Please note that the ports may vary depending on the specific game server. More docker-compose examples are available [here](https://github.com/GameServerManagers/docker-gameserver/tree/main/docker-compose).
+---
+
+## FreeBSDGSM Pot Plugin
+The main freebsdgsm.sh script has the ability to automatically install/run/manage server in pot containers.
+To get started make sure you have the required pkg repository installed:
+```
+$ doas curl -o /usr/local/etc/pkg/repos/FreeBSDGSM.conf "https://pkgs.freebsdgsm.org/Config/FreeBSDGSM.conf"
+$ doas pkg update
+```
+Make sure that FreeBSDGSM is installed:
+```
+$ doas pkg install freebsdgsm
+```
+Now install the pot orchestrator plugin:
+```
+$ doas pkg install freebsdgsm-pot-plugin
+```
+Run freebsdgsm like usual but include the --container flag. e.g:
+```
+# Installing Team Fortress 2 Server
+$ freebsdgsm tf2 --container
+```
+Easy as that! Your server will now be running in a jail separated from
+
+---
+
+### Standalone (Assisted)
+To auto download and process server images, you can use the provided assistance script.
+This script will take care of host dependencies like most importantly pot itself.
 
 ```
-version: '3.4'
-services:
-  linuxgsm-csgo:
-    image: gameservermanagers/gameserver:csgo
-    # image: ghcr.io/gameservermanagers/gameserver:csgo
-    container_name: csgoserver
-    volumes:
-      - /path/to/csgoserver:/data
-    ports:
-      - "27015:27015/tcp"
-      - "27015:27015/udp"
-      - "27020:27020/udp"
-      - "27005:27005/udp"
-    restart: unless-stopped
+### tf2server from the freebsdgsm cdn (Stable):
+
+## Download Helper Script
+$ curl -O -L https://freebsdgsm.org/ContainerInstall.sh
+$ doas chmod +x ContainerInstall.sh
+$ ./ContainerInstall.sh tf2
+```
+```
+### tf2server via github instead (Rolling Release):
+
+## Download Helper Script
+$ curl -O -L https://raw.githubusercontent.com/t2vee/FBSDGSM-Containers/main//ContainerInstall.sh
+$ doas chmod +x ContainerInstall.sh
+$ ./ContainerInstall.sh tf2
+```
+There you go! Simple as that.
+
+### Standalone (Manual)
+To run an image standalone simply download the pot image to your FreeBSD server:
+> NOTE: You must have pot installed yourself and any other required dependencies!
+```
+### tf2server from the freebsdgsm cdn (Stable):
+
+## Download Main Container Image
+$ curl -O -L https://images-cdn.freebsdgsm.org/latest/tf2server.xz
+## Download Container Image Hash
+$ curl -O -L https://images-cdn.freebsdgsm.org/latest/tf2server.xz.skein
+## Import and create pot
+$ doas pot import -p tf2server -t latest -U file://tf2server.xz
 ```
 
-### Docker CLI
-Alternatively, you can use the Docker CLI to run the container:
 ```
-docker run -d \
-  --name csgoserver \
-  -v /path/to/csgoserver:/data \
-  -p 27015:27015 \
-  -p 27020:27020/udp \
-  -p 27005:27005/udp \
-  --restart unless-stopped \
-  gameservermanagers/gameserver:csgo
+### tf2server server via github instead (Rolling Release):
+
+## Download Main Container Image
+$ curl -O -L https://raw.githubusercontent.com/t2vee/FBSDGSM-Containers/main/tf2/tf2server.xz
+## Download Container Image Hash
+$ curl -O -L https://raw.githubusercontent.com/t2vee/FBSDGSM-Containers/main/tf2/tf2server.xz.skein
+## Import and create pot
+$ doas pot import -p tf2server -t latest -U file://tf2server.xz
 ```
-### First Run
-Before the first run, make sure to edit the docker-compose.yml file by changing the image tag and container_name to match your chosen game server. Upon the initial run, LinuxGSM will install the selected server and start running. The game server details will be displayed once the installation is complete.
 
-### Game Server Ports
-Each game server has specific port requirements. Therefore, after the initial run, you need to configure the appropriate ports in your docker-compose file. The required ports will be outputted after the installation process and every time the Docker container is started. Automation for this process is planned for the future.
+---
 
-> There are future plans to auto generate ports in the examples for you.
+## FreeBSDGSM Qemu Plugin (UNSTABLE)
+The main freebsdgsm.sh script has the ability to automatically install/run/manage server in qemu virtual machines for game servers that have limited compatibility with linux or bsd servers.
+> At the moment due to the nature of this plugin, support will NOT be provided for its usage
 
-### Volumes
-There are two types of persistent storage with Docker: volumes and bind mounts, both of which are compatible with this container. For more information on the differences between the two, please refer to the [Docker documentation](https://docs.docker.com/storage/).
-
-Some game servers store files outside of the serverfiles directory, within other parts of the home directory. The `data` directory serves as the home directory for the LinuxGSM user and stores all game server files. Make sure to mount this directory to a persistent storage location.
-
-### LinuxGSM User
-This container uses gosu to run gameservers as the `linuxgsm` user instead of root. If you are using a bind mount for the data directory, ensure that the permissions are appropriately set.
-
-### Run LinuxGSM commands
-You can execute LinuxGSM commands within the container using the docker exec command. Here's an example to run the `./csgoserver details` command as the `linuxgsm` user:
+For Qemu support you not only need the base repository but the development repository:
 ```
-docker exec -it --user linuxgsm csgoserver ./csgoserver details
+### Base Repo
+$ doas curl -o /usr/local/etc/pkg/repos/FreeBSDGSM.conf "https://pkgs.freebsdgsm.org/Config/FreeBSDGSM.conf"
+### Development Repo
+$ doas curl -o /usr/local/etc/pkg/repos/FreeBSDGSM-UNSTABLE.conf "https://pkgs.freebsdgsm.org/Config/FreeBSDGSM-UNSTABLE.conf"
+### Enable Them
+$ doas pkg update
 ```
+Make sure that FreeBSDGSM is installed:
+```
+$ doas pkg install freebsdgsm
+```
+Now install the qemu orchestrator plugin:
+```
+$ doas pkg install freebsdgsm-qemu-plugin
+```
+Run freebsdgsm like usual, but you will need to include a few flags:
+- --vm
+  - to pass off the game server install to the qemu plugin.
+- --force-sha-integrity-check
+  - since this method is quite unstable all files must have their integrity checked.
+  - the script will NOT run without this option.
+- --check-compat
+  - to tell the main installation script to check whether the desired game can be installed via qemu
+
+```
+# Installing a Satisfactory Server
+$ freebsdgsm sf --vm --force-sha-integrity-check --check-compat
+```
+
+
