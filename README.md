@@ -11,7 +11,7 @@
 ---
 > Warning: This README is currently pseudo. There will be many, many changes to how things may work but for now this is how I hope to see it work.
 ## About
-FreeBSDGSM is the LinuxGSM compatibility layer for FreeBSD. This repo holds the [pot images](https://pot.pizzamig.dev/Images/) for all the games servers provided by fgsm.
+FreeBSDGSM is the LinuxGSM compatibility layer for FreeBSD. This repo holds the [pot images](https://pot.pizzamig.dev/Images/) for all the games servers provided by fgsm, as well as the source for the official frebsdgsm plugins.
 All the available images are listed within this repo using their respective server name; e.g TeamFortress 2 is tf2server.
 
 For a list of available game servers visit [linuxgsm.com](https://linuxgsm.com) or the [serverlist.ssv](https://github.com/GameServerManagers/LinuxGSM/blob/master/fbsdgsm/data/serverlist.ssv).
